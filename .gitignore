@@ -1,0 +1,40 @@
+# Dune build artifacts
+/_build/
+/.install/
+/_dune/
+/.dune/
+
+# Opam files
+.opam
+.opam-switch/
+
+# Editor/IDE
+*.merlin
+*.merlin-*)
+*.cmt
+*.cmti
+*.cmi
+*.cmx
+*.o
+*.annot
+*.cache
+*.swp
+*.swo
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# OCaml format backup files
+*~
+
+# Generated executables
+*.exe
+*.native
+*.byte
+
+# Test artifacts
+/test-results/
+
+# Logs
+*.log
