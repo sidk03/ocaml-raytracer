@@ -71,6 +71,15 @@ let cross_tuple _ =
   assert_raises (Failure "cross of point") (fun () -> cross p v1)
 
 
+let ops_color _ =
+  let c1 = make_color 0.9 0.6 0.75 in
+  let c2 = make_color 0.7 0.1 0.25 in
+  let c3 = make_color 0.2 0.3 0.4 in
+  assert_equal true (is_equal_color (make_color 1.6 0.7 1.0) (add_color c1 c2));
+  assert_equal true (is_equal_color (make_color 0.2 0.5 0.5) (sub_color c1 c2));
+  assert_equal true (is_equal_color (make_color 0.4 0.6 0.8) (scalar_color c3 2.));
+  assert_equal true (is_equal_color (make_color 0.14 0.03 0.1) (mult_color c2 c3))
+
 let test_suite = "test suite for raytracer" >::: [
   "tuple_check" >:: tuple_check;
   "add_tuple" >:: add_tuple;
@@ -81,6 +90,7 @@ let test_suite = "test suite for raytracer" >::: [
   "norm_tuple" >:: norm_tuple;
   "dot_tuple" >:: dot_tuple;
   "cross_tuple" >:: cross_tuple;
+  "ops_color" >:: ops_color;
 ]
 
 let _ = run_test_tt_main test_suite
