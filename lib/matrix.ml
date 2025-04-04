@@ -4,6 +4,8 @@ let epsilon = 0.00001;;
 
 let empty_matrix (row:int) (col:int) : matrix = Array.make_matrix row col 0.
 
+let set_index (m:matrix) (row:int) (col:int) (v:float) : unit = m.(row).(col) <- v
+
 let matrix_size (m:matrix) : (int*int) = Array.length m, Array.length m.(0)
 
 let is_equal_matrix (m1:matrix) (m2:matrix) : bool =
@@ -39,6 +41,39 @@ let mult_matrix (a:matrix) (b:matrix) : matrix =
 
 let identity_matrix (i : int) : matrix =
   let m = empty_matrix i i in Array.mapi (fun idx row -> row.(idx) <- 1.; row) m 
-   
-  
 
+let det_2x2 (m:matrix) : float = 
+  if matrix_size m <> (2,2) then failwith "Not a 2x2 Matrix" 
+  else (m.(0).(0) *. m.(1).(1)) -. (m.(0).(1) *. m.(1).(0))
+   
+let remove_row (m:matrix) (row_no:int) : matrix  =
+  let front = Array.sub m 0 row_no in 
+  let back = Array.sub m (row_no+1) ((Array.length m)-(row_no+1)) in
+  Array.append front back
+
+(* 0 indexed !!!*)
+let submatrix (m:matrix) (row:int) (col:int) : matrix = 
+  let rem_row = remove_row m row in 
+  let t_matrix = transpose rem_row in 
+  transpose (remove_row t_matrix col) 
+
+let rec det (m:matrix) : float =
+  let (r,c) = matrix_size m in if (r,c) = (1,1) then m.(0).(0) 
+  else if (r,c) = (2,2) then det_2x2 m 
+  else let row_cof = Array.mapi (fun idx el -> (cofactor m idx 0) *. el.(0)) m in
+  Array.fold_left (+.) 0. row_cof
+  
+and minor (m:matrix) (row:int) (col:int) : float =
+  let sub = submatrix m row col in det sub
+  
+and cofactor (m:matrix) (row:int) (col:int) : float =
+  let min = minor m row col in 
+  if (row+col) mod 2 = 0 then min else 0.-.min
+
+let is_invertable (m:matrix) : bool = 
+  if abs_float(det m -. 0.) < epsilon then false else true
+
+let inverse (m:matrix) : matrix = 
+  let d = det m in 
+  let cof = Array.mapi(fun r_idx row -> Array.mapi (fun c_idx _ -> (cofactor m r_idx c_idx)/.d) row) m in 
+  transpose cof
